@@ -7,5 +7,13 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   sourcemap: true,
-  banner: { js: '"use client";' },
+  onSuccess: `node -e "
+    const fs = require('fs');
+    for (const f of ['dist/index.js', 'dist/index.cjs']) {
+      if (fs.existsSync(f)) {
+        const content = fs.readFileSync(f, 'utf8');
+        fs.writeFileSync(f, '\\"use client\\";\\n' + content);
+      }
+    }
+  "`,
 });
